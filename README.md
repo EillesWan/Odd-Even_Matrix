@@ -1,18 +1,23 @@
 # 奇偶数阵
 
+
+ATTENTION!!! 软件尚未开发完毕。
+
+
+
 #### 介绍
-这是一个简单的由我们独立开发的游戏，游戏具体的玩法是我们的创新玩法。在这个仓库中我们将探索这个原创游戏的平衡性等，游戏建立可行性。
+这是一个简单的由我们独立开发的游戏，游戏具体的玩法是我们的创新玩法，详见下方 玩法。在这个仓库中我们将探索这个原创游戏的平衡性等，游戏建立可行性。
 ——游戏概念提出和研究者：Eilles与其同学们
 
 #### 软件架构
-软件架构说明
+全部使用Python进行程序设计。
 
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  安装Python
+2.  玩游戏的话就直接运行```GameMainAPP.py```
+3.  可以看看代码
 
 #### 使用说明
 
@@ -22,17 +27,10 @@
 
 #### 参与贡献
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+1.  
+2.  
+3.  Eilles Wan 提供技术支持，玩法改进等，同时与 Gong Shengkai & Zhang Haotian 在数学老师 Zeng Jin 的帮助下探索数学理论与平衡性， Gong Zhengqi 提供基本游戏玩法 ， 
+4.  
 
 
-#### 特技
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)

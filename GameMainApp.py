@@ -101,10 +101,12 @@ if __name__ == '__main__':
         os.system("cls")
         printBoard(realBoard)
         try:
-            pos = input("当前玩家："+nowPlayer+"\n输入坐标及你的数字，用 空格 隔开。\n")
+            pos = input("当前玩家： Player"+nowPlayer+"\n输入坐标及你的数字，用 空格 隔开。\n")
         except:
             continue
         pos , placeNum= ([int(pos.split(' ')[0]), int(pos.split(' ')[1])] , int(pos.split(' ')[2]))
+        if placeNum in placed[nowPlayer]:
+            placed[nowPlayer].pop(placed[nowPlayer].index(placeNum))
         square = couldPlace(board,pos,placeNum)
         if not square :
             print("data: "+str(pos)+' - '+str(placeNum)+' ingored')
