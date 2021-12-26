@@ -1,0 +1,13 @@
+奇偶数阵 (Odd-Even Matrix) 是一个简单的数字游戏
+
+该程序依照 Apache软件协议 开源
+
+    开发日志 Development Log
+
+
+    Alpha 0.0.1
+2021 12 20~2021 12 26
+1.确立了基本玩法
+2.制作了控制台程序
+3.由 Zeng Jin 发现游戏规则存在问题，提出 曾氏定理一
+4.由 Eilles Wan 与 Zhang Haotian 研究发现必胜方案，提出 曾氏定理一推导定理一
