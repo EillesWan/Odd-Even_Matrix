@@ -9,7 +9,7 @@ author_email = "W-YI_DoctorYI@outlook.com"
 
 [tool.briefcase.app.oddevenmatrix]
 formal_name = "Odd-Even Matrix"
-description = "一个简单的数字棋盘游戏"
+description = "A simple numerical board game."
 icon = "src/oddevenmatrix/resources/oddevenmatrix"
 sources = ['src/oddevenmatrix']
 requires = []
