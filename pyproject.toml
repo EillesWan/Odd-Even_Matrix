@@ -1,0 +1,49 @@
+[tool.briefcase]
+project_name = "Odd-Even Matrix"
+bundle = "com.ryoun-team.oddevenmatrix"
+version = "0.0.1"
+url = "https://oddevenmatrix.ryoun-team.com/oddevenmatrix"
+license = "Apache Software License"
+author = 'Eilles Wan'
+author_email = "W-YI_DoctorYI@outlook.com"
+
+[tool.briefcase.app.oddevenmatrix]
+formal_name = "Odd-Even Matrix"
+description = "一个简单的数字棋盘游戏"
+icon = "src/oddevenmatrix/resources/oddevenmatrix"
+sources = ['src/oddevenmatrix']
+requires = []
+
+
+[tool.briefcase.app.oddevenmatrix.macOS]
+requires = [
+    'toga-cocoa>=0.3.0.dev20',
+]
+
+[tool.briefcase.app.oddevenmatrix.linux]
+requires = [
+    'toga-gtk>=0.3.0.dev20',
+]
+system_requires = [
+    'libgirepository1.0-dev',
+    'libcairo2-dev',
+    'libpango1.0-dev',
+    'libwebkitgtk-3.0-0',
+    'gir1.2-webkit-3.0',
+]
+
+[tool.briefcase.app.oddevenmatrix.windows]
+requires = [
+    'toga-winforms>=0.3.0.dev20',
+]
+
+# Mobile deployments
+[tool.briefcase.app.oddevenmatrix.iOS]
+requires = [
+    'toga-iOS>=0.3.0.dev20',
+]
+
+[tool.briefcase.app.oddevenmatrix.android]
+requires = [
+    'toga-android>=0.3.0.dev20',
+]
