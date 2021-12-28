@@ -28,10 +28,9 @@ ATTENTION!!! 软件尚未开发完毕。
 
 #### 参与贡献
 
-1.  
-2.  
-3.  Eilles Wan 提供技术支持，玩法改进等，同时与 Gong Shengkai & Zhang Haotian 在数学老师 Zeng Jin 的帮助下探索数学理论与平衡性
-4.  Gong Zhengqi 提供基本游戏玩法 
+1.  Eilles Wan 提供技术支持，玩法改进等，同时与 Gong Shengkai & Zhang Haotian 在数学老师 Zeng Jin 的帮助下探索数学理论与平衡性
+2.  Xiong Zixuan & Li Zekun 测试平衡性并进行玩法修复探索
+3.  Gong Zhengqi 提供基本游戏玩法 
 
 
 ### 作者<金羿>联系方式
