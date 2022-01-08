@@ -97,10 +97,10 @@ class report():
 
 class version:
 
-    libraries = ('briefcase','toga','pyinstaller','py7zr','websockets','torch')
+    libraries = ('pyinstaller','py7zr','websockets')
     '''当前所需库，有一些是开发用的，用户不需要安装'''
 
-    version = ('0.0.1','Alpha',)
+    version = ('0.0.2','Alpha',)
     '''当前版本'''
 
     def __init__(self) -> None:
