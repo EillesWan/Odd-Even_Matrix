@@ -494,9 +494,47 @@ def drawNumbers(surface: pygame.Surface, numberList: tuple, focus: tuple):
 
 
 
-def numberMovement(surface):
-    pass
+def numberMovement(surface, posNum : list, posBoard : list):
+    num = posNum[1]+1
+    color = defaultGreen if isDouble(num) == 1 else defaultPurple
+    
+    posX, posY = screen.get_width()/2-(screen.get_height()*49/160),screen.get_height()*11/160
 
+    startPos = (
+        posX + (screen.get_height() * 197 / 2880) * posNum[1],
+        posY + (screen.get_height() * 197 / 2880) * posNum[0]
+    )
+
+    endPos = (
+        posX + (screen.get_height() * 197 / 2880) * posBoard[1],
+        posY + (screen.get_height() * 197 / 2880) * posBoard[0]
+    )
+
+    def __drawBlock(position: tuple):
+        drawSquare(surface, color,
+                   position,
+                   (screen.get_height() * 47 / 720,
+                    screen.get_height() * 47 / 720)
+                   )
+        drawText(
+            surface,
+            str(num),
+            defaultWhite,
+            position,
+            screen.get_height()*47/720
+        )
+    
+    for i in range(int(startPos[0]),int(endPos[0])):
+        for j in range(int(startPos[1]),int(endPos[1])):
+            __drawBlock((i,j,))
+
+
+
+
+
+
+def isGameOver(sourceBoard: list, nowHand: list) -> bool:
+    pass
 
 
 
@@ -539,6 +577,8 @@ def gameRun():
     nowPlayer = 1
     '''当前的玩家'''
 
+    mouseSelectedArea = (0,None)
+    '''第一个值鼠标选择区域： 0无指示部分，1棋盘，2数字区域；第二个值：指针所在方格'''
 
     noticeTitle = ("就绪",defaultWhite)
     '''窗口下的大标题显示的内容'''
@@ -573,10 +613,71 @@ def gameRun():
                         if (selected[1] >= 0 and selected[1] <= 8):
                             if (selected[0] >= 0 and selected[0] <= 8):
                                 #鼠标在棋盘范围内
+                                if mouseSelectedArea[0] == 2:
+                                    placeNum = mouseSelectedArea[1][1] + 1
+                                    
+                                    if placeNum in notBeenPlaced[nowPlayer]:
+                                        notBeenPlaced[nowPlayer].pop(
+                                            notBeenPlaced[nowPlayer].index(placeNum)
+                                        )
+                                    else:
+                                        print("您手中无此棋子。")
+                                        noticeTitle = ("您手中无此数字",defaultRed)
+                                        continue
+                                    square = couldPlace(sourceBoard, selected, placeNum)
+                                    if not square:
+                                        print("data: "+str(selected)+' - '+str(placeNum)+' ingored')
+                                        # 输入数据无效;
+                                        notBeenPlaced[nowPlayer].append(placeNum)
+                                        notBeenPlaced[nowPlayer].sort()
+                                        continue
+                                    else:
+                                        sourceBoard = square
+                                        realBoard[selected[0]][selected[1]] = placeNum
+                                    nowPlayer += 1
+                                    if nowPlayer >= 3:
+                                        nowPlayer = 1
+
+                                    numberMovement(screen,mouseSelectedArea[1],selected)
+                                    mouseSelectedArea = (0,None)
+                                else:
+                                    mouseSelectedArea = (1,selected)
                                 noticeTitle = ("选中棋盘({},{})".format(selected[0],selected[1]),defaultBlue)
                             elif selected[0] == 10:
+                                #鼠标在数字范围内
+                                if mouseSelectedArea[0] == 1:
+                                    placeNum = selected[1] + 1
+                                    
+                                    if placeNum in notBeenPlaced[nowPlayer]:
+                                        notBeenPlaced[nowPlayer].pop(
+                                            notBeenPlaced[nowPlayer].index(placeNum)
+                                        )
+                                    else:
+                                        print("您手中无此棋子。")
+                                        noticeTitle = ("您手中无此数字",defaultRed)
+                                        continue
+                                    square = couldPlace(sourceBoard, selected, placeNum)
+                                    if not square:
+                                        print("data: "+str(selected)+' - '+str(placeNum)+' ingored')
+                                        # 输入数据无效;
+                                        notBeenPlaced[nowPlayer].append(placeNum)
+                                        notBeenPlaced[nowPlayer].sort()
+                                        continue
+                                    else:
+                                        sourceBoard = square
+                                        realBoard[selected[0]][selected[1]] = placeNum
+                                    nowPlayer += 1
+                                    if nowPlayer >= 3:
+                                        nowPlayer = 1
+
+                                    numberMovement(screen,selected,mouseSelectedArea[1])
+                                    mouseSelectedArea = (0,None)
+                                else:
+                                    mouseSelectedArea = (2,selected)
                                 noticeTitle = ("选中数字{}".format(selected[1]+1),defaultPurple)
                             else:
+                                #鼠标啥范围都不在
+                                mouseSelectedArea = (0,None)
                                 noticeTitle = ("就绪",defaultWhite)
                         else:
                             noticeTitle = ("就绪",defaultWhite)
@@ -607,7 +708,7 @@ def gameRun():
                             placeNum = event.key - 48
                         if event.key in tuple(range(1073741913,1073741923)):
                             placeNum = (event.key - 1073741912)%10
-                
+
                         if placeNum in notBeenPlaced[nowPlayer]:
                             notBeenPlaced[nowPlayer].pop(
                                 notBeenPlaced[nowPlayer].index(placeNum)
