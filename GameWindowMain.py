@@ -81,12 +81,12 @@ def defineSquare(size: int = 9):
 
 
 
-defaultBlue = (0,137,242)
-defaultRed = (255,52,50)
-defaultPurple = (171,112,255)
-defaultGreen = (0,255,33)
-defaultWhite = (242,244,246)
-defaultBlack = (18,17,16)
+BLUE = (0,137,242)
+RED = (255,52,50)
+PURPLE = (171,112,255)
+GREEN = (0,255,33)
+WHITE = (242,244,246)
+BLACK = (18,17,16)
 
 
 defaultSize = 9
@@ -360,7 +360,7 @@ def drawBoard(surface: pygame.Surface, realBoard: list, sourceBoard: list, selec
         drawText(
             surface,
             text,
-            defaultWhite,
+            WHITE,
             (
                 posX+(screen.get_height()*197/2880)*j,
                 posY + (screen.get_height()*197/2880)*i
@@ -391,26 +391,26 @@ def drawBoard(surface: pygame.Surface, realBoard: list, sourceBoard: list, selec
 
             if realBoard[i][j]:
             # 是否存在数字？
-                drawSquareSmall(defaultBlue)
+                drawSquareSmall(BLUE)
                 drawTextSmall(str(realBoard[i][j]))
             else:
                 # 是否被占格？
                 if sourceBoard[i][j]==1:
-                    drawSquareSmall(defaultGreen)
+                    drawSquareSmall(GREEN)
                 elif sourceBoard[i][j]==2:
-                    drawSquareSmall(defaultPurple)
+                    drawSquareSmall(PURPLE)
                 elif sourceBoard[i][j]=='空':
-                    drawSquareSmall(defaultRed)
+                    drawSquareSmall(RED)
                 else:
-                    drawSquareSmall(defaultBlue)
+                    drawSquareSmall(BLUE)
             
             if i == check[0] and j == check[1]:
                 # 是否被指针按下确认？
-                drawHollowSquareSmall(defaultBlack)
+                drawHollowSquareSmall(BLACK)
 
             if i == select[0] and j == select[1]:
                 # 是否被指针选中？
-                drawHollowSquareSmall(defaultWhite)
+                drawHollowSquareSmall(WHITE)
             # 增加的调试信息
             # drawText(
             #     surface,
@@ -426,7 +426,7 @@ def drawBoard(surface: pygame.Surface, realBoard: list, sourceBoard: list, selec
 
 
 
-def drawNoticeTitle(surface: pygame.Surface,text:str,color = defaultWhite):
+def drawNoticeTitle(surface: pygame.Surface,text:str,color = WHITE):
     '''在`surface`上把`text`绘制棋盘上面作为提示标题
     :param surface pygame Surface对象
     :param text 需要显示的标题
@@ -473,7 +473,7 @@ def drawNumbers(surface: pygame.Surface, numberList: tuple, focus: tuple):
         drawText(
             surface,
             text,
-            defaultWhite,
+            WHITE,
             (
                 posX + (screen.get_height() * 197 / 2880) * (num - 1),
                 screen.get_height()*29/40 if isUp else posY
@@ -486,7 +486,7 @@ def drawNumbers(surface: pygame.Surface, numberList: tuple, focus: tuple):
     for num in numberList:
         
         drawSquareSmall(
-            defaultGreen if isDouble(num) == 1 else defaultPurple,
+            GREEN if isDouble(num) == 1 else PURPLE,
             True if focus[1]+1 == num and focus[0] == 10 else False
             )
         drawTextSmall(str(num),True if focus[1]+1 == num and focus[0] == 10 else False)
@@ -496,7 +496,7 @@ def drawNumbers(surface: pygame.Surface, numberList: tuple, focus: tuple):
 
 def numberMovement(surface, posNum : list, posBoard : list):
     num = posNum[1]+1
-    color = defaultGreen if isDouble(num) == 1 else defaultPurple
+    color = GREEN if isDouble(num) == 1 else PURPLE
     
     posX, posY = screen.get_width()/2-(screen.get_height()*49/160),screen.get_height()*11/160
 
@@ -519,7 +519,7 @@ def numberMovement(surface, posNum : list, posBoard : list):
         drawText(
             surface,
             str(num),
-            defaultWhite,
+            WHITE,
             position,
             screen.get_height()*47/720
         )
@@ -580,7 +580,7 @@ def gameRun():
     mouseSelectedArea = (0,None)
     '''第一个值鼠标选择区域： 0无指示部分，1棋盘，2数字区域；第二个值：指针所在方格'''
 
-    noticeTitle = ("就绪",defaultWhite)
+    noticeTitle = ("就绪",WHITE)
     '''窗口下的大标题显示的内容'''
 
 
@@ -622,7 +622,7 @@ def gameRun():
                                         )
                                     else:
                                         print("您手中无此棋子。")
-                                        noticeTitle = ("您手中无此数字",defaultRed)
+                                        noticeTitle = ("您手中无此数字",RED)
                                         continue
                                     square = couldPlace(sourceBoard, selected, placeNum)
                                     if not square:
@@ -642,7 +642,7 @@ def gameRun():
                                     mouseSelectedArea = (0,None)
                                 else:
                                     mouseSelectedArea = (1,selected)
-                                noticeTitle = ("选中棋盘({},{})".format(selected[0],selected[1]),defaultBlue)
+                                noticeTitle = ("选中棋盘({},{})".format(selected[0],selected[1]),BLUE)
                             elif selected[0] == 10:
                                 #鼠标在数字范围内
                                 if mouseSelectedArea[0] == 1:
@@ -654,18 +654,18 @@ def gameRun():
                                         )
                                     else:
                                         print("您手中无此棋子。")
-                                        noticeTitle = ("您手中无此数字",defaultRed)
+                                        noticeTitle = ("您手中无此数字",RED)
                                         continue
-                                    square = couldPlace(sourceBoard, selected, placeNum)
+                                    square = couldPlace(sourceBoard, mouseSelectedArea[1], placeNum)
                                     if not square:
-                                        print("data: "+str(selected)+' - '+str(placeNum)+' ingored')
+                                        print("data: "+str(mouseSelectedArea[1])+' - '+str(placeNum)+' ingored')
                                         # 输入数据无效;
                                         notBeenPlaced[nowPlayer].append(placeNum)
                                         notBeenPlaced[nowPlayer].sort()
                                         continue
                                     else:
                                         sourceBoard = square
-                                        realBoard[selected[0]][selected[1]] = placeNum
+                                        realBoard[mouseSelectedArea[1][0]][mouseSelectedArea[1][1]] = placeNum
                                     nowPlayer += 1
                                     if nowPlayer >= 3:
                                         nowPlayer = 1
@@ -674,13 +674,13 @@ def gameRun():
                                     mouseSelectedArea = (0,None)
                                 else:
                                     mouseSelectedArea = (2,selected)
-                                noticeTitle = ("选中数字{}".format(selected[1]+1),defaultPurple)
+                                noticeTitle = ("选中数字{}".format(selected[1]+1),PURPLE)
                             else:
                                 #鼠标啥范围都不在
                                 mouseSelectedArea = (0,None)
-                                noticeTitle = ("就绪",defaultWhite)
+                                noticeTitle = ("就绪",WHITE)
                         else:
-                            noticeTitle = ("就绪",defaultWhite)
+                            noticeTitle = ("就绪",WHITE)
                             
                         
                         del posX,posY,mousePosX,mousePosY
@@ -715,7 +715,7 @@ def gameRun():
                             )
                         else:
                             print("您手中无此棋子。")
-                            noticeTitle = ("您手中无此数字",defaultRed)
+                            noticeTitle = ("您手中无此数字",RED)
                             continue
                         square = couldPlace(sourceBoard, selected, placeNum)
                         if not square:
@@ -734,7 +734,7 @@ def gameRun():
 
                 #print(str(event))
             
-            screen.fill(defaultBlack)
+            screen.fill(BLACK)
             
             
 
@@ -759,11 +759,11 @@ def gameRun():
 
             drawText(screen,
                      "当前玩家:{}".format(nowPlayer),
-                     defaultBlack,
+                     BLACK,
                      (screen.get_width()/2-(screen.get_height()*49/160),
                       screen.get_height()*475/576),
                      int(screen.get_height()/16),
-                     bg=defaultWhite
+                     bg=WHITE
                      )
             
             pygame.display.update()  # 刷新屏幕
