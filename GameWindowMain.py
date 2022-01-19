@@ -28,15 +28,12 @@ limitations under the License.
 
 
 
-
-
-
-
-
-
+from copy import deepcopy as dc
+from email.contentmanager import raw_data_manager
+from email.policy import default
 import sys
 import pygame
-
+from typing import Union
 
 
 pygame.init() # 初始化pygame
@@ -46,7 +43,7 @@ screen = pygame.display.set_mode((600,800),pygame.RESIZABLE) # Pygame窗口
 pygame.display.set_caption("金羿 - 奇偶数阵") # 标题
 
 
-radius = 20 # 半径
+#radius = 20 # 半径
 
 
 
@@ -65,7 +62,7 @@ pygame.display.update()
 
 
 
-def defineSquare(size: int = 9):
+def defineSquare(size: int = 9) -> list:
     # 建立空的棋盘
     square = []
     for i in range(size):
@@ -88,7 +85,6 @@ GREEN = (0,255,33)
 WHITE = (242,244,246)
 BLACK = (18,17,16)
 
-
 defaultSize = 9
 '''默认棋盘大小'''
 
@@ -108,39 +104,45 @@ defaultSize = 9
 
 
 
-
-def isDouble(n: int):
+def isEven(n: int) -> int:
     if n % 2 == 0:
         return 2
     else:
         return 1
 
 
-def couldPlace(square: list, pos: list, num: int):
+def couldPlace(square: list, pos: tuple, num: int) -> Union[bool, list]:
     '''返回是否能够放置棋子，若不能，则返回`False`，若能够，则返回放置后的源盘
-    :param square:list  当前的源盘（SourceBoard）
-    :param pos:list     需要判定的位置
-    :param num:int      需要判定的数字'''
-    num = isDouble(num)
-    # print(str(num))
-    # only line & row
+
+    Parameters
+    --------
+    square: :class:`list`
+        当前的源盘（SourceBoard）
+    pos: :class:`tuple`
+        需要判定的位置
+    num: :class:`int`
+        需要判定的数字'''
+    # print(pos)
+    num = isEven(num)
+    
     if square[pos[0]][pos[1]] and square[pos[0]][pos[1]] != num:
         return False
+
     if num == 1:
         square[pos[0]][pos[1]] = '奇'
-    if num == 2:
+    elif num == 2:
         square[pos[0]][pos[1]] = '偶'
 
     for i in range(len(square)):
         # 遍历行
-        print(str(i)+','+str(pos[1]))
+        #print(str(i)+','+str(pos[1]))
         if square[i][pos[1]] and square[i][pos[1]] != num:
             square[i][pos[1]] = '空'
         else:
             square[i][pos[1]] = num
     for j in range(len(square[pos[0]])):
         # 遍历对应列
-        print(str(pos[0])+' '+str(j))
+        #print(str(pos[0])+' '+str(j))
         if square[pos[0]][j] and square[pos[0]][j] != num:
             square[pos[0]][j] = '空'
         else:
@@ -150,8 +152,8 @@ def couldPlace(square: list, pos: list, num: int):
     j2 = pos[1]
     while i >= 0:
         # 遍历上半部分斜线
-        print(str(i)+':'+str(j1))
-        print(str(i)+':'+str(j2))
+        #print(str(i)+':'+str(j1))
+        #print(str(i)+':'+str(j2))
         if j1 >= 0:
             if square[i][j1] and square[i][j1] != num:
                 square[i][j1] = '空'
@@ -170,8 +172,8 @@ def couldPlace(square: list, pos: list, num: int):
     j2 = pos[1]
     while i <= len(square)-1:
         # 遍历下半部分斜线
-        print(str(i)+'`'+str(j1))
-        print(str(i)+'`'+str(j2))
+        #print(str(i)+'`'+str(j1))
+        #print(str(i)+'`'+str(j2))
         if j1 >= 0:
             if square[i][j1] and square[i][j1] != num:
                 square[i][j1] = '空'
@@ -205,16 +207,22 @@ def couldPlace(square: list, pos: list, num: int):
 
 
 
-def printBoard(realBoard: list, sourceBoard: list, select: list):
+def printBoard(realBoard: list, sourceBoard: list, select: list) -> None:
     '''在控制台打印棋盘
-    :param realBoard 显示出来的棋盘
-    :param sourceBoard 解析用的棋盘
-    :param select 当前选中的方格
+
+    Parameters
+    ----------
+    realBoard: :class:`list`
+        显示出来的棋盘
+    sourceBoard: :class:`list`
+        解析用的棋盘
+    select: :class:`list`
+        当前选中的方格
     '''
     boardBar = '  '
     for i in range(len(realBoard)):
         boardBar += str(i)+'|'
-    print(boardBar)
+    #print(boardBar)
     boardBar = ''
     for i in range(len(realBoard)):
         boardBar += str(i)+'|'
@@ -233,7 +241,7 @@ def printBoard(realBoard: list, sourceBoard: list, select: list):
                         boardBar += '×'
                     else:
                         boardBar += '  '
-        print(boardBar)
+        #print(boardBar)
         boardBar = ''
 
 
@@ -241,12 +249,19 @@ def printBoard(realBoard: list, sourceBoard: list, select: list):
 
 
 
-def drawSquare(surface: pygame.Surface, color:tuple, position:tuple, size:tuple):
+def drawSquare(surface: pygame.Surface, color:tuple, position:tuple, size:tuple) -> None:
     '''在`surface`上绘制矩形
-    :param surface pygame Surface对象
-    :param color 颜色数组(RGB)或(RGBA)
-    :param position 矩形左上角的位置
-    :param size 矩形大小(以像素为准)
+
+    Parameter
+    ---------
+    surface: :class:`pygame.Surface`
+        pygame Surface对象
+    color: :class:`tuple`
+        颜色数组(RGB)或(RGBA)
+    position: :class:`tuple`
+        矩形左上角的位置
+    size: :class:`tuple`
+        矩形大小(以像素为准)
     '''
     pygame.draw.rect(
         surface,
@@ -263,56 +278,59 @@ def drawSquare(surface: pygame.Surface, color:tuple, position:tuple, size:tuple)
 
 
 
-def drawHollowSquare(surface: pygame.Surface, color:tuple, position:tuple, size:tuple, width:int = 1):
+def drawHollowSquare(surface: pygame.Surface, color:tuple, position:tuple, size:tuple, width:int = 1) -> None:
     '''在`surface`上绘制空心矩形
-    :param surface pygame Surface对象
-    :param color 颜色数组(RGB)或(RGBA)
-    :param position 矩形左上角的位置
-    :param size 矩形大小(以像素为准)
-    :param width 矩形边宽度(以像素为准)
+
+    Parameter
+    ---------
+    surface: `pygame.Surface`
+        pygame Surface对象
+    color: `tuple`
+        颜色数组(RGB)或(RGBA)
+    position: `tuple`
+        矩形左上角的位置
+    size: `tuple`
+        矩形大小(以像素为准)
+    width: `int`
+        矩形边宽度(以像素为准)
     '''
-    
-    pygame.draw.aalines(
+
+    pygame.draw.rect(
         surface,
         color,
-        True,
-        (
-            (
-                int(position[0]),
-                int(position[1])
-            ),
-            (
-                int(position[0]+size[0]),
-                int(position[1])
-            ),
-            (
-                int(position[0]+size[0]),
-                int(position[1]+size[1])
-            ),
-            (
-                int(position[0]),
-                int(position[1]+size[1])
-            ),
-            
-        )
+        pygame.Rect(int(position[0]), int(position[1]), size[0], size[1]),
+        width
     )
 
 
 
 
 
-def drawText(surface: pygame.Surface, text: str, color: tuple, position: tuple, size, isBold=False, isItalic=False, font='DengXian', isAntialias=True, bg=None):
+def drawText(surface: pygame.Surface, text: str, color: tuple, position: tuple, size: int, isBold=False, isItalic=False, font='DengXian', isAntialias=True, bg=None) -> None:
     '''在`surface`上写下`text`
-    :param surface pygame Surface对象
-    :param text 显示的文字
-    :param color 颜色数组(RGB)或(RGBA)
-    :param position 文字左上角的位置
-    :param size 文字字号(以像素为准)
-    :param isBold 是否加粗 默认为 `False`
-    :param isItalic 是否斜体 默认为 `False`
-    :param font 字体 默认为 `DengXian`
-    :param isAntialias 是否使用平滑字体 默认为 `True`
-    :param bg 背景颜色 默认为 `None`，即无背景色
+
+    Parameter
+    --------
+    surface: `pygame.Surface`
+        pygame Surface对象
+    text: `str`
+        显示的文字
+    color: `tuple`
+        颜色数组(RGB)或(RGBA)
+    position: `tuple`
+        文字左上角的位置
+    size: int
+        文字字号(以像素为准)
+    isBold: `bool`
+        是否加粗 默认为 `False`
+    isItalic: `bool`
+        是否斜体 默认为 `False`
+    font: `str`
+        字体 默认为 `DengXian`
+    isAntialias: `bool`
+        是否使用平滑字体 默认为 `True`
+    bg: `tuple`
+        背景颜色 默认为 `None`，即无背景色
     '''
     surface.blit(
         pygame.font.SysFont(
@@ -337,18 +355,26 @@ def drawText(surface: pygame.Surface, text: str, color: tuple, position: tuple, 
 
 
 
-def drawBoard(surface: pygame.Surface, realBoard: list, sourceBoard: list, select: list, check: list):
+def drawBoard(surface: pygame.Surface, realBoard: list, sourceBoard: list, select: list, check: list) -> None:
     '''在`surface`绘制棋盘
-    :param surface pygame Surface对象
-    :param realBoard 显示出来的棋盘
-    :param sourceBoard 解析用的棋盘
-    :param select 当前指针所在的的方格
-    :param check 按下了鼠标左键之后选中的方格
+
+    Parameter
+    ---------
+    surface: `pygame.Surface`
+        pygame Surface对象
+    realBoard: `list`
+        显示出来的棋盘
+    sourceBoard: `list`
+        解析用的棋盘
+    select: `list`
+        当前指针所在的的方格
+    check: `list`
+        按下了鼠标左键之后选中的方格
     '''
 
     posX, posY = screen.get_width()/2-(screen.get_height()*49/160),screen.get_height()*11/160
 
-    def drawSquareSmall(color):
+    def drawSquareSmall(color:tuple) -> None:
         drawSquare(surface, color,
                    (posX + (screen.get_height() * 197 / 2880) * j,
                     posY + (screen.get_height() * 197 / 2880) * i),
@@ -356,7 +382,7 @@ def drawBoard(surface: pygame.Surface, realBoard: list, sourceBoard: list, selec
                     screen.get_height() * 47 / 720)
                    )
     
-    def drawTextSmall(text):
+    def drawTextSmall(text:str) -> None:
         drawText(
             surface,
             text,
@@ -369,7 +395,7 @@ def drawBoard(surface: pygame.Surface, realBoard: list, sourceBoard: list, selec
         )
 
     
-    def drawHollowSquareSmall(color):
+    def drawHollowSquareSmall(color:tuple) -> None:
         drawHollowSquare(surface, color,
                     (
                         posX + screen.get_height()*(197*j+9)/2880,
@@ -394,7 +420,6 @@ def drawBoard(surface: pygame.Surface, realBoard: list, sourceBoard: list, selec
                 drawSquareSmall(BLUE)
                 drawTextSmall(str(realBoard[i][j]))
             else:
-                # 是否被占格？
                 if sourceBoard[i][j]==1:
                     drawSquareSmall(GREEN)
                 elif sourceBoard[i][j]==2:
@@ -426,11 +451,17 @@ def drawBoard(surface: pygame.Surface, realBoard: list, sourceBoard: list, selec
 
 
 
-def drawNoticeTitle(surface: pygame.Surface,text:str,color = WHITE):
+def drawNoticeTitle(surface: pygame.Surface,text:str,color = WHITE) -> None:
     '''在`surface`上把`text`绘制棋盘上面作为提示标题
-    :param surface pygame Surface对象
-    :param text 需要显示的标题
-    :param color 标题颜色
+
+    Parameters
+    ---------
+    surface: `pygame.Surface`
+        pygame Surface对象
+    text: `str`
+        需要显示的标题
+    color: `tuple`
+        标题颜色
     '''
     drawText(
         surface,
@@ -448,16 +479,22 @@ def drawNoticeTitle(surface: pygame.Surface,text:str,color = WHITE):
 
 
 
-def drawNumbers(surface: pygame.Surface, numberList: tuple, focus: tuple):
+def drawNumbers(surface: pygame.Surface, numberList: tuple, focus: tuple) -> None:
     '''在`surface`上绘制数字方块
-    :param surface pygame Surface对象
-    :param numbeiList 数字列表
-    :param focus 当前指针所在的的方格
+
+    Parameters
+    ---------
+    surface: `pygame.Surface`
+        pygame Surface对象
+    numberList: `tuple`
+        数字列表
+    focus: `tuple`
+        当前指针所在的的方格
     '''
 
     posX, posY = screen.get_width()/2-(screen.get_height()*49/160), screen.get_height()*121/160
 
-    def drawSquareSmall(color,isUp:bool):
+    def drawSquareSmall(color:tuple,isUp:bool) -> None:
         drawSquare(surface,
                    color,
                    (
@@ -469,7 +506,7 @@ def drawNumbers(surface: pygame.Surface, numberList: tuple, focus: tuple):
                        screen.get_height() * 47 / 720)
                    )
     
-    def drawTextSmall(text,isUp:bool):
+    def drawTextSmall(text:str,isUp:bool) -> None:
         drawText(
             surface,
             text,
@@ -486,17 +523,15 @@ def drawNumbers(surface: pygame.Surface, numberList: tuple, focus: tuple):
     for num in numberList:
         
         drawSquareSmall(
-            GREEN if isDouble(num) == 1 else PURPLE,
+            GREEN if isEven(num) == 1 else PURPLE,
             True if focus[1]+1 == num and focus[0] == 10 else False
             )
         drawTextSmall(str(num),True if focus[1]+1 == num and focus[0] == 10 else False)
 
 
-
-
-def numberMovement(surface, posNum : list, posBoard : list):
+def numberMovement(surface, posNum : list, posBoard : list) -> None:
     num = posNum[1]+1
-    color = GREEN if isDouble(num) == 1 else PURPLE
+    color = GREEN if isEven(num) == 1 else PURPLE
     
     posX, posY = screen.get_width()/2-(screen.get_height()*49/160),screen.get_height()*11/160
 
@@ -528,24 +563,64 @@ def numberMovement(surface, posNum : list, posBoard : list):
         for j in range(int(startPos[1]),int(endPos[1])):
             __drawBlock((i,j,))
 
+def allNone(check:list) -> bool:
+    all = True
+    for x in check:
+        if x:
+            all = False
+            break
+    return all
 
+def isGameOver(game:list, current_nums:list) -> Union[bool, None]:
 
+    if not(current_nums):
+        return None
 
+    odd = [x for x in current_nums if x % 2 == 1]
+    even = [x for x in current_nums if x % 2 == 0]
+    returnValue = False
 
+    all = []
+    haveEven = [None for x in range(9)]
+    for index,row in enumerate(game):
+        dcrow = dc(row)
+        # print(f"{index}: {row}")
+        while "空" in dcrow: dcrow.remove("空")
+        for x in dcrow: all.append(x)
+        if 2 in dcrow:
+            haveEven[index] = 2
+        elif 1 in dcrow:
+            haveEven[index] = 1
+    
+    if (1 in all) and (2 in all): return False
+    # print(f"check1: {returnValue}, all: {all}")
 
-def isGameOver(sourceBoard: list, nowHand: list) -> bool:
-    pass
+    # 不可能放棋子+不是第一回（因为刚开始全是'空'）
+    if (allNone(haveEven)) and (len(current_nums) != 9):
+        returnValue = True
+    elif len(odd) and len(even):
+        returnValue = False
 
+    # print(f"check2: {returnValue}, even: {haveEven}")
 
+    all_even = False
+    for x in haveEven:
+        if x == 2:
+            all_even = True
+            break
+    #全奇 + 没有奇数
+    #print(f"check2: {odd}")
+    if not(all_even) and not(len(odd)):
+        returnValue = True
+    #全偶 
+    elif all_even and not(len(even)):
+        returnValue = True
 
+    # print(f"check3: {all_even}, {returnValue}")
 
-
-
-
-
+    return returnValue
 
 def gameRun():
-
 
 
     sourceBoard = defineSquare(defaultSize)
@@ -591,7 +666,7 @@ def gameRun():
         if events:
             for event in events:  # 遍历事件
                 if event.type == pygame.QUIT:  # 退出事件
-                    print("EXIT")
+                    # print("EXIT")
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -610,8 +685,8 @@ def gameRun():
                                 int(posX/(screen.get_height()*197/2880)+1)-1,
                             )
                         
-                        if (selected[1] >= 0 and selected[1] <= 8):
-                            if (selected[0] >= 0 and selected[0] <= 8):
+                        if (selected[1] >= 0 and selected[1] < defaultSize):
+                            if (selected[0] >= 0 and selected[0] < defaultSize):
                                 #鼠标在棋盘范围内
                                 if mouseSelectedArea[0] == 2:
                                     placeNum = mouseSelectedArea[1][1] + 1
@@ -621,15 +696,16 @@ def gameRun():
                                             notBeenPlaced[nowPlayer].index(placeNum)
                                         )
                                     else:
-                                        print("您手中无此棋子。")
+                                        # print("您手中无此棋子。")
                                         noticeTitle = ("您手中无此数字",RED)
                                         continue
                                     square = couldPlace(sourceBoard, selected, placeNum)
                                     if not square:
-                                        print("data: "+str(selected)+' - '+str(placeNum)+' ingored')
+                                        # print("data: "+str(selected)+' - '+str(placeNum)+' ingored')
                                         # 输入数据无效;
                                         notBeenPlaced[nowPlayer].append(placeNum)
                                         notBeenPlaced[nowPlayer].sort()
+                                        noticeTitle = ("棋子奇偶性不符合要求", RED)
                                         continue
                                     else:
                                         sourceBoard = square
@@ -653,12 +729,12 @@ def gameRun():
                                             notBeenPlaced[nowPlayer].index(placeNum)
                                         )
                                     else:
-                                        print("您手中无此棋子。")
+                                        # print("您手中无此棋子。")
                                         noticeTitle = ("您手中无此数字",RED)
                                         continue
                                     square = couldPlace(sourceBoard, mouseSelectedArea[1], placeNum)
                                     if not square:
-                                        print("data: "+str(mouseSelectedArea[1])+' - '+str(placeNum)+' ingored')
+                                        # print("data: "+str(mouseSelectedArea[1])+' - '+str(placeNum)+' ingored')
                                         # 输入数据无效;
                                         notBeenPlaced[nowPlayer].append(placeNum)
                                         notBeenPlaced[nowPlayer].sort()
@@ -674,13 +750,18 @@ def gameRun():
                                     mouseSelectedArea = (0,None)
                                 else:
                                     mouseSelectedArea = (2,selected)
-                                noticeTitle = ("选中数字{}".format(selected[1]+1),PURPLE)
+
+                                if selected[1] % 2 == 0:
+                                    noticeTitle = ("选中数字{}".format(selected[1]+1),GREEN)
+                                else:
+                                    noticeTitle = ("选中数字{}".format(selected[1]+1),PURPLE)
                             else:
                                 #鼠标啥范围都不在
                                 mouseSelectedArea = (0,None)
                                 noticeTitle = ("就绪",WHITE)
+
                         else:
-                            noticeTitle = ("就绪",WHITE)
+                            noticeTitle = ("就绪", WHITE)
                             
                         
                         del posX,posY,mousePosX,mousePosY
@@ -697,49 +778,52 @@ def gameRun():
                     
                     
                 elif event.type == pygame.KEYDOWN:
-                    print(notBeenPlaced[nowPlayer])
+                    
+                    #print(notBeenPlaced[nowPlayer])
                     if event.key == pygame.K_ESCAPE:
-                        print("EXIT")
+                        # print("EXIT")
                         pygame.quit()
                         sys.exit()
                     if event.key in tuple(range(48,58))+tuple(range(1073741913,1073741923)):
-                        print("KEY",event.key)
-                        if event.key in tuple(range(48,58)):
-                            placeNum = event.key - 48
-                        if event.key in tuple(range(1073741913,1073741923)):
-                            placeNum = (event.key - 1073741912)%10
-
-                        if placeNum in notBeenPlaced[nowPlayer]:
-                            notBeenPlaced[nowPlayer].pop(
-                                notBeenPlaced[nowPlayer].index(placeNum)
-                            )
+                        # 按下数字键
+                        if selected[0] in tuple(range(defaultSize)) and selected[1] in tuple(range(defaultSize)):
+                            #指针选中
+                            if not realBoard[selected[0]][selected[1]]:
+                                #此位置没东西
+                                if event.key in tuple(range(48,58)):
+                                    placeNum = event.key - 48
+                                if event.key in tuple(range(1073741913,1073741923)):
+                                    placeNum = (event.key - 1073741912)%10
+                        
+                                if placeNum in notBeenPlaced[nowPlayer]:
+                                    notBeenPlaced[nowPlayer].pop(
+                                        notBeenPlaced[nowPlayer].index(placeNum)
+                                    )
+                                else:
+                                    #print("您手中无此棋子。")
+                                    noticeTitle = ("您手中无此数字", RED)
+                                    continue
+                                square = couldPlace(sourceBoard, selected, placeNum)
+                                if not square:
+                                    # print("data: "+str(selected)+' - '+str(placeNum)+' ignored')
+                                    # 输入数据无效;
+                                    notBeenPlaced[nowPlayer].append(placeNum)
+                                    notBeenPlaced[nowPlayer].sort()
+                                    noticeTitle = ("棋子奇偶性不符合要求", RED)
+                                    continue
+                                else:
+                                    sourceBoard = square
+                                    realBoard[selected[0]][selected[1]] = placeNum
+                                nowPlayer += 1
+                                if nowPlayer >= 3:
+                                    nowPlayer = 1
+                            else:
+                                noticeTitle = ("此处已有数字", RED)
                         else:
-                            print("您手中无此棋子。")
-                            noticeTitle = ("您手中无此数字",RED)
-                            continue
-                        square = couldPlace(sourceBoard, selected, placeNum)
-                        if not square:
-                            print("data: "+str(selected)+' - '+str(placeNum)+' ingored')
-                            # 输入数据无效;
-                            notBeenPlaced[nowPlayer].append(placeNum)
-                            notBeenPlaced[nowPlayer].sort()
-                            continue
-                        else:
-                            sourceBoard = square
-                            realBoard[selected[0]][selected[1]] = placeNum
-                        nowPlayer += 1
-                        if nowPlayer >= 3:
-                            nowPlayer = 1
-                
+                            noticeTitle = ("未选中棋盘", RED)
 
-                #print(str(event))
             
             screen.fill(BLACK)
-            
-            
-
-            drawNoticeTitle(screen,noticeTitle[0],noticeTitle[1])
-            
 
             drawSquare(screen, (0, 161, 231),
                     (screen.get_width()/2-(screen.get_height()*5/16), screen.get_height()/16),
@@ -752,13 +836,12 @@ def gameRun():
                     (screen.get_height()*99/160, screen.get_height()*99/160)
                     )
             
-
             drawBoard(screen,realBoard,sourceBoard,pos,selected)
 
             drawNumbers(screen,notBeenPlaced[nowPlayer],pos)
 
             drawText(screen,
-                     "当前玩家:{}".format(nowPlayer),
+                     f"当前玩家:{nowPlayer}",
                      BLACK,
                      (screen.get_width()/2-(screen.get_height()*49/160),
                       screen.get_height()*475/576),
@@ -766,16 +849,37 @@ def gameRun():
                      bg=WHITE
                      )
             
+            check = isGameOver(sourceBoard, notBeenPlaced[nowPlayer])
+            if check == None:
+                noticeTitle = (f"平局！无子可走！", RED)
+                return 'balance'
+            elif check:
+                if(nowPlayer == 1):
+                    win_player = 2
+                else:
+                    win_player = 1
+                # print(f"玩家{win_player}获胜！")
+                noticeTitle = (f"玩家{win_player}获胜！", RED)
+                return win_player
+                
+            drawNoticeTitle(screen,noticeTitle[0],noticeTitle[1])
+
             pygame.display.update()  # 刷新屏幕
+
+            #pygame.time.wait(1000)
         # 每帧运行
     #跳出循环运行
 
 
 
 
+def mainWindow():
+    pass
 
 
-print('Load Over')
+
+
+
 
 
 

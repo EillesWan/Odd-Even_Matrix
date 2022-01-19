@@ -31,6 +31,10 @@ limitations under the License.
 
     开发日志 Development Log
 
+    Alpha 0.0.5
+2022 1 19
+1.修复所有bug
+
     Alpha 0.0.4
 2022 1 15
 1.新增棋盘棋子移动功能，点击数字可以使之移动
