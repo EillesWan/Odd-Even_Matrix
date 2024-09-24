@@ -20,6 +20,8 @@ ATTENTION!!! 软件尚未开发完毕。
 2.  目前的游戏命令行模式开始程序为```GameConsoleMain.py```
 3.  目前的游戏窗口模式开始程序为```GameWindowMain.py```
 
+命令行显示模式需在旧版控制台下运行（仅针对视窗10+操作系统）
+
 ### 游戏玩法
 
 #### 核心玩法
@@ -39,9 +41,7 @@ ATTENTION!!! 软件尚未开发完毕。
 3.  Gong Zhengqi 提供基本游戏玩法 
 
 
-### 作者\<金羿\>联系方式
+### 作者联系方式
 
-1.  QQ       2647547478
-2.  电邮      EillesWan2006@163.com W-YI_DoctorYI@outlook.com EillesWan@outlook.com
-3.  微信      WYI_DoctorYI
+1.  QQ群      1070505462
 
